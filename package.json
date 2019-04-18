@@ -1,0 +1,23 @@
+{
+  "name": "medicalcenterchatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "debug": "node --inspect index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@line/bot-sdk": "^6.6.0",
+    "body-parser": "^1.18.3",
+    "config": "^3.1.0",
+    "express": "^4.16.4",
+    "linebot": "^1.4.1",
+    "mysql": "^2.16.0",
+    "request": "^2.88.0",
+    "util": "^0.11.1"
+  }
+}
