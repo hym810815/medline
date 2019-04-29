@@ -31,75 +31,73 @@ app.post('/webhook', linebotParser, function (req, res) {
     console.log('webhook in');
 });
 
-// var inputarr = []
+var appointment_time = [];
+var search_time = [];
 
 bot.on('message', function (event) {
     var userinput = event.message.text;
     var id_regex = /^[A-Z]\d{9}$/;
-    //     if (userinput == '查詢') {
-    //         console.log(userinput);
-    //         event.reply({ type: 'text', text: '請輸入身分證已進行查詢: ' })
-    //         userinput = ''
-    //         userinput = event.message.text
-    //         if (userinput == /^[A-Z]\d{9}$/) {
-    //             console.log('userinput = ' + userinput)
-    //         }
-    //         time.push(event.timestamp)
-    //         console.log(time)
-    //         time = []
-    //         // console.log(time)
-    //     }
-    //     if (userinput == '掛號') {
-    //         console.log(userinput)
-    //         event.reply({ type: 'text', text: '請問你要掛哪一科?請輸入牙科或胸腔科' });
-    //         time.push(event.timestamp)
-    //         console.log(time)
-    //         time = []
-    //         console.log(time)
-    //     }
-    //     if (userinput == '牙科') {
-    //         console.log(userinput)
-    //         event.reply({ type: 'text', text: '請輸入身分證已進行驗證: ' })
-    //         time.push(event.timestamp)
-    //         console.log(time)
-    //         time = []
-    //         console.log(time)
-    //     }
-    //     if (userinput == '胸腔科') {
-    //         console.log(userinput)
-    //         event.reply({ type: 'text', text: '請輸入身分證已進行驗證: ' })
-    //         time.push(event.timestamp)
-    //         console.log(time)
-    //         time = []
-    //         console.log(time)
-    //     }
-    // });
-    if (userinput == "查詢") {
+
+    if (userinput == "掛號") {
+        appointment_time.push(event.timestamp);
+        console.log(appointment_time);
+        event.reply('請問要掛哪一科？');
+    } else if (userinput == '牙科' || userinput == '胸腔科') {
         event.reply('請輸入身分證字號');
-    } else if (userinput.match(id_regex)) {
+        appointment_time.push(event.timestamp);
+        console.log(appointment_time.length);
+    } else if (appointment_time.length >= 2 && userinput.match(id_regex)) {
+        db.query("SELECT * FROM `med_appointment_sub` WHERE `ID`= ?", [userinput], (error, results, fields) => {
+            if (results.length == true) {
+                console.log([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
+                event.reply([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
+            } else {
+                var new_user = []
+                // var i;
+                const val = {
+                    ID: new_user[0],
+                    Name: new_user[1],
+                    Sex: new_user[2],
+                    Subject: new_user[3],
+                    App_time: new_user[4],
+                    Doctor: new_user[5]
+                };
+
+                event.reply('請輸入: 生份證字號, Name, Sex, Subject, App_time, Doctor');
+                if (new_user.length <= 6) {
+                    new_user.push(userinput);
+                    console.log(new_user.length);
+                }
+                console.log(val);
+
+                // db.query('insert into `med_appointment_sub` set ?', val, (error, results, fields) => {
+                //     console.log(results)
+                // });
+            }
+        });
+        appointment_time = [];
+        console.log(appointment_time.length);
+    } else if (!userinput.match(id_regex)) {
+        console.log('no id value');
+        event.reply('no id value');
+    }
+
+    if (userinput == "查詢") {
+        search_time.push(event.timestamp);
+        console.log(search_time);
+        event.reply('請輸入身分證字號');
+    } else if (search_time.length >= 1 && userinput.match(id_regex)) {
         db.query("SELECT * FROM `med_appointment_sub` WHERE `ID`= ?", [userinput], (error, results, fields) => {
             if (results.length == false) {
                 console.log('wrong input');
                 event.reply("wrong input");
             } else {
-                console.log([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
-                event.reply([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
+                console.log([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
+                event.reply([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
             }
         });
-    }
-
-    if (userinput == "掛號") {
-        event.reply('請問要掛哪一科？');
-    } else if (userinput == '牙科' || userinput == '胸腔科') {
-        db.query("SELECT Name, Doctor FROM `med_appointment_sub` WHERE `Subject`= ?", [userinput], (error, results, fields) => {
-            if (results.length == false) {
-                console.log('wrong input');
-                event.reply("wrong input");
-            } else {
-            console.log([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
-            event.reply([{ type: 'text', text: '掛號資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
-            }
-        });
+        search_time = [];
+        console.log(search_time.length);
     }
 });
 
