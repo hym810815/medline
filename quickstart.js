@@ -79,13 +79,11 @@ function listMajors(auth) {
     }, (err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
         const rows = res.data.values;
-        const lastRow = rows.getLastRow();
         if (rows.length) {
             console.log('Name, Major:');
             // Print columns A and E, which correspond to indices 0 and 4.
             rows.map((row) => {
                 console.log(`${row[1]}, ${row[2]}, ${row[3]}, ${row[4]}, ${row[5]}, ${row[6]}`);
-                console.log(lastRow)
             });
         } else {
             console.log('No data found.');
