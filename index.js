@@ -15,8 +15,8 @@ const googleAuth = require('google-auth-library');
 
 const db = mysql.createConnection({
     host: "medical.cg1fvo9lgals.ap-southeast-1.rds.amazonaws.com",
-    user: "admin",
-    password: "12345678",
+    user: "administrator",
+    password: "1qaz2wsx",
     database: "medical"
 });
 db.connect();
@@ -83,8 +83,8 @@ bot.on('message', function (event) {
                 console.log('wrong input');
                 event.reply("wrong input");
             } else {
-                console.log([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
-                event.reply([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD hh:mm') }]);
+                console.log([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD') }]);
+                event.reply([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD') }]);
             }
         });
         search_time = [];
