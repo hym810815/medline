@@ -52,18 +52,14 @@ bot.on('message', function (event) {
         appointment_time.push(event.timestamp);
         console.log(appointment_time.length);
     } else if (appointment_time.length >= 2 && userinput.match(id_regex)) {
-        db.query("SELECT * FROM `med_appointment_sub` WHERE `ID`= ?", [userinput], (error, results, fields) => {
+        db.query("SELECT ID FROM `med_basic_info` WHERE `ID`= ?", [userinput], (error, results, fields) => {
             if (results.length == true) {
-                event.reply({ type: 'text', text: '你有已掛號的紀錄，請輸入查詢以檢視相關資訊' });
+                event.reply('123');
             } else {
-                event.reply([{ type: 'text', text: '目前沒有你的掛號紀錄，請至以下網址來進行掛號' }, {
+                event.reply([{ type: 'text', text: '目前本診所沒有你的紀錄，請至以下網址來填寫資本基料' }, {
                     type: 'text',
-                    text: 'https://forms.gle/jmkDAB5xYSv4ZMwn9'
+                    text: 'https://71fbd5fc.ngrok.io/signup'
                 }]);
-                
-                // db.query('insert into `med_appointment_sub` set ?', val, (error, results, fields) => {
-                //     console.log(results)
-                // });
             }
         });
         appointment_time = [];
@@ -84,7 +80,13 @@ bot.on('message', function (event) {
                 event.reply("wrong input");
             } else {
                 console.log([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD') }]);
-                event.reply([{ type: 'text', text: '查詢資訊:' }, { type: 'text', text: '醫生:' + results[0].Doctor }, { type: 'text', text: '科別:' + results[0].Subject }, { type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD') }]);
+                event.reply([{ type: 'text', text: '查詢資訊:' }, {
+                    type: 'text', text: '醫生:' + results[0].Doctor
+                }, {
+                    type: 'text', text: '科別:' + results[0].Subject
+                }, {
+                    type: 'text', text: '看診時間:' + moment(results[0].App_time).format('YYYY/MM/DD')
+                }]);
             }
         });
         search_time = [];
